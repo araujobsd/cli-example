@@ -1,0 +1,59 @@
+REGISTER user1
+Success
+
+CREATE_LISTING user1 'Phone model 8' 'Black color, brand new' 1000 'Electronics'
+1
+
+GET_LISTING user1 1
+Phone model 8|Black color, brand new|1000|2019-02-22 12:34:56|Electronics|user1
+
+CREATE_LISTING user1 'Black shoes' 'Training shoes' 100 'Sports'
+2
+
+REGISTER user2
+Success
+
+REGISTER user2
+Error - user already existing
+
+CREATE_LISTING user2 'T-shirt' 'White color' 20 'Sports'
+3
+
+[wrong - should be user2 (documentation is wrong)]
+GET_LISTING user2 3
+T-shirt|White color|20|2019-02-22 12:34:58|Sports|user2
+
+GET_CATEGORY user1 'Fashion' sort_time asc
+Error - category not found
+
+[wrong - should be user2 (documentation is wrong)]
+GET_CATEGORY user2 'Sports' sort_time dsc
+T-shirt|White color|20|2019-02-22 12:34:58|Sports|user2
+
+GET_CATEGORY user1 'Sports' sort_time dsc
+Black shoes|Training shoes|100|2019-02-22 12:34:57|Sports|user1
+
+GET_CATEGORY user1 'Sports' sort_price dsc
+Black shoes|Training shoes|100|2019-02-22 12:34:57|Sports|user1
+
+GET_TOP_CATEGORY user1
+Sports
+
+DELETE_LISTING user1 3
+Error - listing owner mismatch
+
+DELETE_LISTING user2 3
+Success
+
+[Wrong - should return an error (documentation is wrong)]
+GET_TOP_CATEGORY user2
+Error - unknown user
+
+DELETE_LISTING user1 2
+Success
+
+GET_TOP_CATEGORY user1
+Electronics
+
+GET_TOP_CATEGORY user3
+Error - unknown user
