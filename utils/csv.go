@@ -1,3 +1,4 @@
+// +build !windows
 // SPDX-License-Identifier: BSD-2-Clause
 /*-
  * Copyright 2019 by Marcelo Araujo <araujo@FreeBSD.org>
