@@ -34,7 +34,6 @@ jobs:
             go get -v golang.org/x/lint/golint
             go get github.com/fzipp/gocyclo
             go get -u github.com/client9/misspell/cmd/misspell
-            go get github.com/securego/gosec/cmd/gosec
             go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
       - run:
           name: golint
@@ -42,9 +41,6 @@ jobs:
       - run:
           name: misspell
           command: misspell ./...
-      - run:
-          name: gosec
-          command: gosec -exclude=G104,G107,G204,G304,G402 ./...
       - run:
           name: golangcli-lint
           command: golangci-lint run --no-config
