@@ -251,10 +251,13 @@ func GetCSVTopCategory(username string) (err error) {
 			category := strings.ToLower(splEntry[5])
 			top[category] = top[category] + 1
 		} else {
-			return errors.New("Error - unknown user")
+			err = errors.New("Error - unknown user")
 		}
 	}
 
+	if err != nil && len(top) == 0 {
+		return err
+	}
 	max := 0
 	for k, v := range top {
 		if v >= max {
