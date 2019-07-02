@@ -43,4 +43,4 @@ jobs:
           command: misspell ./...
       - run:
           name: golangcli-lint
-          command: golangci-lint run --no-config
+          command: golangci-lint run --no-config --disable=typecheck
