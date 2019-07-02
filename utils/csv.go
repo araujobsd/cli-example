@@ -69,7 +69,7 @@ func WriteCSVProduct(product ProductListing) error {
 	}
 
 	// Check if user exist
-	if IsUsernameExist(trimQuotes(product.Username)) == false {
+	if !IsUsernameExist(trimQuotes(product.Username)) {
 		return errors.New("Error - unknow user")
 	}
 
@@ -106,7 +106,10 @@ func ReGenerateCSVProduct(lines [][]string) error {
 	w := csv.NewWriter(file)
 	for _, line := range lines {
 		if len(line[0]) > 0 {
-			w.Write(line)
+			err = w.Write(line)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 	w.Flush()
@@ -149,7 +152,10 @@ func DeleteCSVItem(username string, id int) (err error) {
 		return err
 	}
 
-	ReGenerateCSVProduct(entries)
+	err = ReGenerateCSVProduct(entries)
+	if err != nil {
+		return err
+	}
 
 	return errors.New("Success")
 }
