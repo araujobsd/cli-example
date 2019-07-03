@@ -45,6 +45,7 @@ import (
 const (
 	csvUserPath  = "/tmp/users.csv"
 	csvItemsPath = "/tmp/items.csv"
+	timeFormat   = "02-01-2006-15:04PM"
 )
 
 // ProductListing - Structure used to organize the item
@@ -240,15 +241,15 @@ func sortMap(data map[int]string, args ...string) {
 
 		if args[0] == "sort_time" && args[1] == "dsc" {
 			sort.SliceStable(product, func(i, j int) bool {
-				ti, _ := time.Parse("02-01-2006-15:04PM", product[i].CreatedAt)
-				tj, _ := time.Parse("02-01-2006-15:04PM", product[j].CreatedAt)
+				ti, _ := time.Parse(timeFormat, product[i].CreatedAt)
+				tj, _ := time.Parse(timeFormat, product[j].CreatedAt)
 				return ti.Before(tj)
 			})
 		}
 		if args[0] == "sort_time" && args[1] == "asc" {
 			sort.SliceStable(product, func(i, j int) bool {
-				ti, _ := time.Parse("02-01-2006-15:04PM", product[i].CreatedAt)
-				tj, _ := time.Parse("02-01-2006-15:04PM", product[j].CreatedAt)
+				ti, _ := time.Parse(timeFormat, product[i].CreatedAt)
+				tj, _ := time.Parse(timeFormat, product[j].CreatedAt)
 				return ti.After(tj)
 			})
 		}
