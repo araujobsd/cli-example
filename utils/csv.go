@@ -78,7 +78,7 @@ func WriteCSVProduct(product ProductListing) error {
 
 	file, err := os.OpenFile(csvItemsPath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer file.Close()
 
@@ -104,7 +104,7 @@ func WriteCSVProduct(product ProductListing) error {
 func ReGenerateCSVProduct(lines [][]string) error {
 	file, err := os.Create(csvItemsPath)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer file.Close()
 
@@ -113,7 +113,7 @@ func ReGenerateCSVProduct(lines [][]string) error {
 		if len(line[0]) > 0 {
 			err = w.Write(line)
 			if err != nil {
-				panic(err)
+				return err
 			}
 		}
 	}
@@ -123,11 +123,20 @@ func ReGenerateCSVProduct(lines [][]string) error {
 
 // ReadCSVProduct - Read all items from a csv item file
 func ReadCSVProduct() [][]string {
-	file, _ := os.OpenFile(csvItemsPath, os.O_RDONLY, 0644)
+	file, err := os.OpenFile(csvItemsPath, os.O_RDONLY, 0644)
+	if err != nil {
+		fmt.Println("Error - csv product file does not exist")
+		return nil
+	}
 	r := csv.NewReader(file)
 	r.LazyQuotes = true
 	lines, err := r.ReadAll()
 	if err != nil {
+		return nil
+	}
+
+	if len(lines) == 0 {
+		fmt.Println("Warning - there is no items")
 		return nil
 	}
 
@@ -137,6 +146,10 @@ func ReadCSVProduct() [][]string {
 // DeleteCSVItem - Remove an item from csv item file
 func DeleteCSVItem(username string, id int) (err error) {
 	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return errors.New("Warning - Product list is empty")
+	}
+
 	for index, entry := range entries {
 		splEntry := strings.Split(entry[0], "|")
 		_id, _ := strconv.Atoi(splEntry[0])
@@ -170,6 +183,10 @@ func DeleteCSVItem(username string, id int) (err error) {
 // GetCSVItem - Find and return an item from csv item file
 func GetCSVItem(username string, id int) (err error) {
 	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return errors.New("Warning - Product list is empty")
+	}
+
 	for index, entry := range entries {
 		splEntry := strings.Split(entry[0], "|")
 		_id, _ := strconv.Atoi(splEntry[0])
@@ -251,6 +268,9 @@ func GetCSVTopCategory(username string) (err error) {
 
 	top := make(map[string]int)
 	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return errors.New("Warning - Product list is empty")
+	}
 
 	for _, entry := range entries {
 		splEntry := strings.Split(entry[0], "|")
@@ -282,6 +302,10 @@ func GetCSVTopCategory(username string) (err error) {
 func GetCSVCategory(username string, category string, args ...string) (err error) {
 	allitems := make(map[int]string)
 	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return errors.New("Warning - Product list is empty")
+	}
+
 	for index, entry := range entries {
 		splEntry := strings.Split(entry[0], "|")
 		_username := strings.ToLower(splEntry[1])
@@ -332,6 +356,10 @@ func GetCSVCategory(username string, category string, args ...string) (err error
 // DoesProductExist - Verify if a product exist
 func DoesProductExist(product ProductListing) bool {
 	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return false
+	}
+
 	for _, entry := range entries {
 		splEntry := strings.Split(entry[0], "|")
 		title := splEntry[2]
@@ -374,7 +402,8 @@ func LastProductId() int {
 func IsUsernameExist(username string) bool {
 	file, err := os.Open(csvUserPath)
 	if err != nil {
-		panic(err)
+		fmt.Println("Error - csv users file does not exist")
+		return false
 	}
 
 	csv := bufio.NewScanner(file)
@@ -391,7 +420,8 @@ func IsUsernameExist(username string) bool {
 func WriteCSVUser(username string) error {
 	file, err := os.OpenFile(csvUserPath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
-		panic(err)
+		fmt.Println("Error - csv users file does not exist")
+		return err
 	}
 	defer file.Close()
 
