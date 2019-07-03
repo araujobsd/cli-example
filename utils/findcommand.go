@@ -35,6 +35,7 @@ import (
 
 var cmdpath string = "./commands/"
 
+// FindCmd - Find a command inside ./commands CWD
 func FindCmd(command []string) (fullpath string, err error) {
 	for _, v := range command {
 		found, err := filepath.Glob(cmdpath + v)

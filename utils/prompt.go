@@ -32,10 +32,12 @@ import (
 	"reflect"
 )
 
+// Prompt - Default prompt shell
 type Prompt struct {
 	super string `default:"thecarousell# "`
 }
 
+// SetPrompt - Set prompt
 func SetPrompt(arg ...string) string {
 	var prompt Prompt
 

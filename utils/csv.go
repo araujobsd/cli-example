@@ -46,6 +46,7 @@ const (
 	csvItemsPath = "/tmp/items.csv"
 )
 
+// ProductListing - Structure used to organize the item
 type ProductListing struct {
 	Id          int
 	Username    string
@@ -63,6 +64,7 @@ func trimQuotes(word string) string {
 	return word
 }
 
+// WriteCSVProduct - Writes the item into the csv file
 func WriteCSVProduct(product ProductListing) error {
 	// Check if product already exist
 	if DoesProductExist(product) {
@@ -97,6 +99,8 @@ func WriteCSVProduct(product ProductListing) error {
 	return res
 }
 
+// ReGenerateCSVProduct - Regenerates the csv item file
+//                        for delete/update operations
 func ReGenerateCSVProduct(lines [][]string) error {
 	file, err := os.Create(csvItemsPath)
 	if err != nil {
@@ -117,6 +121,7 @@ func ReGenerateCSVProduct(lines [][]string) error {
 	return nil
 }
 
+// ReadCSVProduct - Read all items from a csv item file
 func ReadCSVProduct() [][]string {
 	file, _ := os.OpenFile(csvItemsPath, os.O_RDONLY, 0644)
 	r := csv.NewReader(file)
@@ -129,6 +134,7 @@ func ReadCSVProduct() [][]string {
 	return lines
 }
 
+// DeleteCSVItem - Remove an item from csv item file
 func DeleteCSVItem(username string, id int) (err error) {
 	entries := ReadCSVProduct()
 	for index, entry := range entries {
@@ -161,6 +167,7 @@ func DeleteCSVItem(username string, id int) (err error) {
 	return errors.New("Success")
 }
 
+// GetCSVItem - Find and return an item from csv item file
 func GetCSVItem(username string, id int) (err error) {
 	entries := ReadCSVProduct()
 	for index, entry := range entries {
@@ -238,6 +245,7 @@ func sortMap(data map[int]string, args ...string) {
 	}
 }
 
+// GetCSVTopCategory - Show the top category with most items
 func GetCSVTopCategory(username string) (err error) {
 	var topCategory string
 
@@ -270,6 +278,7 @@ func GetCSVTopCategory(username string) (err error) {
 	return nil
 }
 
+// GetCSVCategory - Show items from a follow category
 func GetCSVCategory(username string, category string, args ...string) (err error) {
 	allitems := make(map[int]string)
 	entries := ReadCSVProduct()
@@ -320,6 +329,7 @@ func GetCSVCategory(username string, category string, args ...string) (err error
 	return err
 }
 
+// DoesProductExist - Verify if a product exist
 func DoesProductExist(product ProductListing) bool {
 	entries := ReadCSVProduct()
 	for _, entry := range entries {
@@ -338,6 +348,7 @@ func DoesProductExist(product ProductListing) bool {
 	return false
 }
 
+// LastProductId - Gets the latest product ID
 func LastProductId() int {
 	var lastID int = 1
 	file, err := os.Open(csvItemsPath)
@@ -359,6 +370,7 @@ func LastProductId() int {
 	return lastID + 1
 }
 
+// IsUsernameExist - Check if user exist
 func IsUsernameExist(username string) bool {
 	file, err := os.Open(csvUserPath)
 	if err != nil {
@@ -375,6 +387,7 @@ func IsUsernameExist(username string) bool {
 	return false
 }
 
+// WriteCSVUser - Write username into csv user file
 func WriteCSVUser(username string) error {
 	file, err := os.OpenFile(csvUserPath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
