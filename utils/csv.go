@@ -66,6 +66,116 @@ func trimQuotes(word string) string {
 	return word
 }
 
+func sortMap(data map[int]string, args ...string) {
+	product := []ProductListing{}
+
+	for _, v := range data {
+		splEntry := strings.Split(v, "|")
+		_price, _ := strconv.Atoi(splEntry[2])
+		n := ProductListing{Title: splEntry[0], Description: splEntry[1],
+			Price: _price, CreatedAt: splEntry[3]}
+		product = append(product, n)
+	}
+
+	if len(args) >= 2 {
+		if args[0] == "sort_price" && args[1] == "dsc" {
+			sort.SliceStable(product, func(i, j int) bool {
+				return product[i].Price < product[j].Price
+			})
+		}
+
+		if args[0] == "sort_price" && args[1] == "asc" {
+			sort.SliceStable(product, func(i, j int) bool {
+				return product[i].Price > product[j].Price
+			})
+		}
+
+		if args[0] == "sort_time" && args[1] == "dsc" {
+			sort.SliceStable(product, func(i, j int) bool {
+				ti, _ := time.Parse(timeFormat, product[i].CreatedAt)
+				tj, _ := time.Parse(timeFormat, product[j].CreatedAt)
+				return ti.Before(tj)
+			})
+		}
+		if args[0] == "sort_time" && args[1] == "asc" {
+			sort.SliceStable(product, func(i, j int) bool {
+				ti, _ := time.Parse(timeFormat, product[i].CreatedAt)
+				tj, _ := time.Parse(timeFormat, product[j].CreatedAt)
+				return ti.After(tj)
+			})
+		}
+	}
+
+	for i := 0; i < len(product); i++ {
+		fmt.Println(string(fmt.Sprintf("%s|%s|%d|%s",
+			product[i].Title, product[i].Description,
+			product[i].Price, product[i].CreatedAt)))
+	}
+}
+
+// DoesProductExist - Verify if a product exist
+func DoesProductExist(product ProductListing) bool {
+	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return false
+	}
+
+	for _, entry := range entries {
+		splEntry := strings.Split(entry[0], "|")
+		title := splEntry[2]
+		desc := splEntry[3]
+		cat := splEntry[5]
+		if trimQuotes(product.Title) == trimQuotes(title) &&
+			trimQuotes(product.Description) == trimQuotes(desc) &&
+			trimQuotes(product.Category) == trimQuotes(cat) {
+
+			return true
+		}
+	}
+
+	return false
+}
+
+// LastProductId - Gets the latest product ID
+func LastProductId() int {
+	var lastID int = 1
+	file, err := os.Open(csvItemsPath)
+	if err != nil {
+		return lastID
+	}
+	defer file.Close()
+
+	csv := csv.NewReader(file)
+	csv.LazyQuotes = false
+	for {
+		record, err := csv.Read()
+		if err == io.EOF {
+			break
+		}
+		lastID, _ = strconv.Atoi(strings.Split(record[0], "|")[0])
+	}
+
+	return lastID + 1
+}
+
+// IsUsernameExist - Check if user exist
+func IsUsernameExist(username string) bool {
+	file, err := os.Open(csvUserPath)
+	if err != nil {
+		fmt.Println("Error - csv users file does not exist")
+		return false
+	}
+
+	csv := bufio.NewScanner(file)
+	for csv.Scan() {
+		if username == csv.Text() {
+			return true
+		}
+	}
+
+	return false
+}
+
 // WriteCSVProduct - Writes the item into the csv file
 func WriteCSVProduct(product ProductListing) error {
 	// Check if product already exist
@@ -215,53 +325,6 @@ func GetCSVItem(username string, id int) (err error) {
 	return errors.New("Success")
 }
 
-func sortMap(data map[int]string, args ...string) {
-	product := []ProductListing{}
-
-	for _, v := range data {
-		splEntry := strings.Split(v, "|")
-		_price, _ := strconv.Atoi(splEntry[2])
-		n := ProductListing{Title: splEntry[0], Description: splEntry[1],
-			Price: _price, CreatedAt: splEntry[3]}
-		product = append(product, n)
-	}
-
-	if len(args) >= 2 {
-		if args[0] == "sort_price" && args[1] == "dsc" {
-			sort.SliceStable(product, func(i, j int) bool {
-				return product[i].Price < product[j].Price
-			})
-		}
-
-		if args[0] == "sort_price" && args[1] == "asc" {
-			sort.SliceStable(product, func(i, j int) bool {
-				return product[i].Price > product[j].Price
-			})
-		}
-
-		if args[0] == "sort_time" && args[1] == "dsc" {
-			sort.SliceStable(product, func(i, j int) bool {
-				ti, _ := time.Parse(timeFormat, product[i].CreatedAt)
-				tj, _ := time.Parse(timeFormat, product[j].CreatedAt)
-				return ti.Before(tj)
-			})
-		}
-		if args[0] == "sort_time" && args[1] == "asc" {
-			sort.SliceStable(product, func(i, j int) bool {
-				ti, _ := time.Parse(timeFormat, product[i].CreatedAt)
-				tj, _ := time.Parse(timeFormat, product[j].CreatedAt)
-				return ti.After(tj)
-			})
-		}
-	}
-
-	for i := 0; i < len(product); i++ {
-		fmt.Println(string(fmt.Sprintf("%s|%s|%d|%s",
-			product[i].Title, product[i].Description,
-			product[i].Price, product[i].CreatedAt)))
-	}
-}
-
 // GetCSVTopCategory - Show the top category with most items
 func GetCSVTopCategory(username string) (err error) {
 	var topCategory string
@@ -351,69 +414,6 @@ func GetCSVCategory(username string, category string, args ...string) (err error
 	}
 
 	return err
-}
-
-// DoesProductExist - Verify if a product exist
-func DoesProductExist(product ProductListing) bool {
-	entries := ReadCSVProduct()
-	if len(entries) == 0 {
-		return false
-	}
-
-	for _, entry := range entries {
-		splEntry := strings.Split(entry[0], "|")
-		title := splEntry[2]
-		desc := splEntry[3]
-		cat := splEntry[5]
-		if trimQuotes(product.Title) == trimQuotes(title) &&
-			trimQuotes(product.Description) == trimQuotes(desc) &&
-			trimQuotes(product.Category) == trimQuotes(cat) {
-
-			return true
-		}
-	}
-
-	return false
-}
-
-// LastProductId - Gets the latest product ID
-func LastProductId() int {
-	var lastID int = 1
-	file, err := os.Open(csvItemsPath)
-	if err != nil {
-		return lastID
-	}
-	defer file.Close()
-
-	csv := csv.NewReader(file)
-	csv.LazyQuotes = false
-	for {
-		record, err := csv.Read()
-		if err == io.EOF {
-			break
-		}
-		lastID, _ = strconv.Atoi(strings.Split(record[0], "|")[0])
-	}
-
-	return lastID + 1
-}
-
-// IsUsernameExist - Check if user exist
-func IsUsernameExist(username string) bool {
-	file, err := os.Open(csvUserPath)
-	if err != nil {
-		fmt.Println("Error - csv users file does not exist")
-		return false
-	}
-
-	csv := bufio.NewScanner(file)
-	for csv.Scan() {
-		if username == csv.Text() {
-			return true
-		}
-	}
-
-	return false
 }
 
 // WriteCSVUser - Write username into csv user file
