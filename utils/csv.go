@@ -240,16 +240,16 @@ func sortMap(data map[int]string, args ...string) {
 
 		if args[0] == "sort_time" && args[1] == "dsc" {
 			sort.SliceStable(product, func(i, j int) bool {
-				t_i, _ := time.Parse("02-01-2006-15:04PM", product[i].CreatedAt)
-				t_j, _ := time.Parse("02-01-2006-15:04PM", product[j].CreatedAt)
-				return t_i.Before(t_j)
+				ti, _ := time.Parse("02-01-2006-15:04PM", product[i].CreatedAt)
+				tj, _ := time.Parse("02-01-2006-15:04PM", product[j].CreatedAt)
+				return ti.Before(tj)
 			})
 		}
 		if args[0] == "sort_time" && args[1] == "asc" {
 			sort.SliceStable(product, func(i, j int) bool {
-				t_i, _ := time.Parse("02-01-2006-15:04PM", product[i].CreatedAt)
-				t_j, _ := time.Parse("02-01-2006-15:04PM", product[j].CreatedAt)
-				return t_i.After(t_j)
+				ti, _ := time.Parse("02-01-2006-15:04PM", product[i].CreatedAt)
+				tj, _ := time.Parse("02-01-2006-15:04PM", product[j].CreatedAt)
+				return ti.After(tj)
 			})
 		}
 	}

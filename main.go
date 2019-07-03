@@ -104,8 +104,8 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	// print banner
-	banner_l := "\t\t " + strings.Repeat("-", 20)
-	fmt.Fprintln(os.Stdout, banner_l)
+	bannerl := "\t\t " + strings.Repeat("-", 20)
+	fmt.Fprintln(os.Stdout, bannerl)
 	fmt.Fprintln(os.Stdout, banner)
 
 	for {
