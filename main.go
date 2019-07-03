@@ -106,8 +106,6 @@ func main() {
 	banner_l := "\t\t " + strings.Repeat("-", 20)
 	fmt.Fprintln(os.Stdout, banner_l)
 	fmt.Fprintln(os.Stdout, banner)
-	fmt.Fprintln(os.Stdout, banner_l)
-	fmt.Fprintln(os.Stdout, "\n")
 
 	for {
 		fmt.Print(prompt)
