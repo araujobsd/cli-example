@@ -48,6 +48,12 @@ const (
 	timeFormat   = "02-01-2006-15:04PM"
 )
 
+var (
+	ErrPAE  = errors.New("Error - Product already exist")
+	ErrUNKU = errors.New("Error - Unknow user")
+	ErrPLE  = errors.New("Error - Product list is empty")
+)
+
 // ProductListing - Structure used to organize the item
 type ProductListing struct {
 	Id          int
@@ -180,12 +186,12 @@ func IsUsernameExist(username string) bool {
 func WriteCSVProduct(product ProductListing) error {
 	// Check if product already exist
 	if DoesProductExist(product) {
-		return errors.New("Error - Product already exist")
+		return ErrPAE
 	}
 
 	// Check if user exist
 	if !IsUsernameExist(trimQuotes(product.Username)) {
-		return errors.New("Error - unknow user")
+		return ErrUNKU
 	}
 
 	file, err := os.OpenFile(csvItemsPath, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
@@ -257,7 +263,7 @@ func ReadCSVProduct() [][]string {
 func DeleteCSVItem(username string, id int) (err error) {
 	entries := ReadCSVProduct()
 	if len(entries) == 0 {
-		return errors.New("Warning - Product list is empty")
+		return ErrPLE
 	}
 
 	for index, entry := range entries {
@@ -294,7 +300,7 @@ func DeleteCSVItem(username string, id int) (err error) {
 func GetCSVItem(username string, id int) (err error) {
 	entries := ReadCSVProduct()
 	if len(entries) == 0 {
-		return errors.New("Warning - Product list is empty")
+		return ErrPLE
 	}
 
 	for index, entry := range entries {
@@ -304,7 +310,7 @@ func GetCSVItem(username string, id int) (err error) {
 
 		if id == _id {
 			if trimQuotes(username) != trimQuotes(_username) {
-				err = errors.New("Error - unknow user")
+				err = ErrUNKU
 				break
 			} else {
 				a := strings.Split(entries[index][0], "|")
@@ -332,7 +338,7 @@ func GetCSVTopCategory(username string) (err error) {
 	top := make(map[string]int)
 	entries := ReadCSVProduct()
 	if len(entries) == 0 {
-		return errors.New("Warning - Product list is empty")
+		return ErrPLE
 	}
 
 	for _, entry := range entries {
@@ -366,7 +372,7 @@ func GetCSVCategory(username string, category string, args ...string) (err error
 	allitems := make(map[int]string)
 	entries := ReadCSVProduct()
 	if len(entries) == 0 {
-		return errors.New("Warning - Product list is empty")
+		return ErrPLE
 	}
 
 	for index, entry := range entries {
@@ -385,7 +391,7 @@ func GetCSVCategory(username string, category string, args ...string) (err error
 			}
 		} else {
 			if err == nil {
-				err = errors.New("Error - unknow user")
+				err = ErrUNKU
 			}
 		}
 	}
