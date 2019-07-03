@@ -125,7 +125,6 @@ func ReGenerateCSVProduct(lines [][]string) error {
 func ReadCSVProduct() [][]string {
 	file, err := os.OpenFile(csvItemsPath, os.O_RDONLY, 0644)
 	if err != nil {
-		fmt.Println("Error - csv product file does not exist")
 		return nil
 	}
 	r := csv.NewReader(file)
@@ -136,7 +135,6 @@ func ReadCSVProduct() [][]string {
 	}
 
 	if len(lines) == 0 {
-		fmt.Println("Warning - there is no items")
 		return nil
 	}
 
