@@ -44,3 +44,6 @@ jobs:
       - run:
           name: golangcli-lint
           command: golangci-lint run --no-config --disable=typecheck
+      - run:
+          name: build
+          command: make
