@@ -6,7 +6,7 @@
 
 cli-example
 ================
-It is a CRUD CLI implementation using Go1.12 that simulates an user listing products. It uses CSV to store the data, and all CRUD commands and others can be implemented dinamically without the need to restart the software to get access to it.
+It is a CRUD CLI implementation using Go1.12 that simulates an user listing products. It uses CSV to store the data, and all CRUD commands and others can be implemented dinamically without the need to restart the main program to load it.
 
 How to build?
 ================
