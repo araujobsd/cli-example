@@ -42,6 +42,7 @@ import (
 
 const (
 	thecarousell = "thecarousell# "
+	banner       = "\t\t Find the best deals\n \t\t wherever you go :)\n"
 )
 
 var (
@@ -100,6 +101,13 @@ func runCommand(commandStr string) error {
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
+
+	// print banner
+	banner_l := "\t\t " + strings.Repeat("-", 20)
+	fmt.Fprintln(os.Stdout, banner_l)
+	fmt.Fprintln(os.Stdout, banner)
+	fmt.Fprintln(os.Stdout, banner_l)
+	fmt.Fprintln(os.Stdout, "\n")
 
 	for {
 		fmt.Print(prompt)
