@@ -488,24 +488,18 @@ func UpdateCSVItem(username string, id int, args []string) (err error) {
 						Price: _price, Category: args[5],
 						CreatedAt: a[6]}
 				}
+				break
 			}
 		} else {
-			err = errors.New("Error - not found")
+			err = errors.New("Error - item not found for update")
 		}
 	}
 
 	if err != nil {
 		return err
 	} else {
-		err = DeleteCSVItem(username, id)
-		if err != nil {
-			return err
-		}
-
-		err = WriteCSVProduct(newproduct)
-		if err != nil {
-			return err
-		}
+		_ = DeleteCSVItem(username, id)
+		_ = WriteCSVProduct(newproduct)
 		err = errors.New("Item updated")
 	}
 
