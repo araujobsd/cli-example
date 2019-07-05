@@ -443,3 +443,64 @@ func WriteCSVUser(username string) error {
 
 	return res
 }
+
+// UpdateCSVItem - Find and update an item from csv item file
+func UpdateCSVItem(username string, id int, args []string) (err error) {
+	var newproduct ProductListing
+	entries := ReadCSVProduct()
+	if len(entries) == 0 {
+		return errors.New("Warning - Product list is empty")
+	}
+
+	for index, entry := range entries {
+		splEntry := strings.Split(entry[0], "|")
+		_id, _ := strconv.Atoi(splEntry[0])
+		_username := splEntry[1]
+
+		if id == _id {
+			if trimQuotes(username) != trimQuotes(_username) {
+				err = errors.New("Error - unknow user")
+				break
+			} else {
+				a := strings.Split(entries[index][0], "|")
+				_price, _ := strconv.Atoi(a[4])
+				switch {
+				case len(args) == 3:
+					newproduct = ProductListing{Id: id, Username: username,
+						Title: args[2], Description: a[3],
+						Price: _price, Category: a[5],
+						CreatedAt: a[6]}
+				case len(args) == 4:
+					newproduct = ProductListing{Id: id, Username: username,
+						Title: args[2], Description: args[3],
+						Price: _price, Category: a[5],
+						CreatedAt: a[6]}
+				case len(args) == 5:
+					_price, _ := strconv.Atoi(args[4])
+					newproduct = ProductListing{Id: id, Username: username,
+						Title: args[2], Description: args[3],
+						Price: _price, Category: a[5],
+						CreatedAt: a[6]}
+				case len(args) == 6:
+					_price, _ := strconv.Atoi(args[4])
+					newproduct = ProductListing{Id: id, Username: username,
+						Title: args[2], Description: args[3],
+						Price: _price, Category: args[5],
+						CreatedAt: a[6]}
+				}
+			}
+		} else {
+			err = errors.New("Error - not found")
+		}
+	}
+
+	if err != nil {
+		return err
+	} else {
+		DeleteCSVItem(username, id)
+		WriteCSVProduct(newproduct)
+		err = errors.New("Item updated")
+	}
+
+	return err
+}

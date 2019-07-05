@@ -59,6 +59,13 @@ Usage:
    GET_TOP_CATEGORY user1
 ```
 
+- `update_listing`: Update a product based on its id
+```
+Usage:
+   update_listing user1 id <title> <description> <price> <category>
+```
+
+
 #### NOTE
 We do a normalization on the command line, if you type REGISTER or ReGiStEr, we will find the right command for you. Also you can run the commands as a standalone command, just get into ```commands``` and run it using the same parameters above.
 
