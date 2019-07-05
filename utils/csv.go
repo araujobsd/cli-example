@@ -488,7 +488,6 @@ func UpdateCSVItem(username string, id int, args []string) (err error) {
 						Price: _price, Category: args[5],
 						CreatedAt: a[6]}
 				}
-				break
 			}
 		} else {
 			err = errors.New("Error - item not found for update")
