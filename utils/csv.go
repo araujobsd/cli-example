@@ -497,8 +497,15 @@ func UpdateCSVItem(username string, id int, args []string) (err error) {
 	if err != nil {
 		return err
 	} else {
-		DeleteCSVItem(username, id)
-		WriteCSVProduct(newproduct)
+		err = DeleteCSVItem(username, id)
+		if err != nil {
+			return err
+		}
+
+		err = WriteCSVProduct(newproduct)
+		if err != nil {
+			return err
+		}
 		err = errors.New("Item updated")
 	}
 
