@@ -1,2 +1,5 @@
 #!/bin/sh
-exec make
+echo "==> Go get all"
+go get all
+echo "==> Make it"
+make
