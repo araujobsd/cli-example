@@ -62,7 +62,7 @@ Usage:
 - `update_listing`: Update a product based on its id
 ```
 Usage:
-   update_listing user1 id <title> <description> <price> <category>
+   UPDATE_LISTING user1 id <title> <description> <price> <category>
 ```
 
 
